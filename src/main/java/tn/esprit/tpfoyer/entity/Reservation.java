@@ -19,8 +19,6 @@ public class Reservation {
 
     @Id
     String idReservation;
-
-
     Date anneeUniversitaire;
     boolean estValide;
 
