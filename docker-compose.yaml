@@ -16,7 +16,7 @@ services:
       - db_data:/var/lib/mysql
 
   app:
-    image: ahmedhachicha201/tp-foyer:1.0.0
+    image: chohdi/tp-foyer:1.0.0
     container_name: tp-foyer-app
     restart: on-failure
     ports:
