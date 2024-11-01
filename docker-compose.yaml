@@ -2,14 +2,12 @@ version: '3.8'
 
 services:
   app:
-    image: AhmedNaifer/tp-foyer:1.0.0
+    image: ahmednaifer/tp-foyer:1.0.0
     container_name: tp-foyer-app
     ports:
       - "8087:8089"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/db
-      SPRING_DATASOURCE_USERNAME: chiheb
-      SPRING_DATASOURCE_PASSWORD: chiheb
+
       SPRING_MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
       SPRING_MANAGEMENT_ENDPOINTS_WEB_BASE_PATH: /actuator
       SPRING_MANAGEMENT_ENDPOINT_HEALTH_SHOWDETAILS: always
