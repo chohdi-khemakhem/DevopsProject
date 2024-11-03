@@ -45,39 +45,13 @@ public class ChambreServiceImpl implements IChambreService {
     }
 
 
-
-
-
-
-
-    public List<Chambre> recupererChambresSelonTyp(TypeChambre tc)
-    {
+    public List<Chambre> recupererChambresSelonTyp(TypeChambre tc) {
         return chambreRepository.findAllByTypeC(tc);
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public Chambre trouverchambreSelonEtudiant(long cin) {
-       //
+        //
 
         return chambreRepository.trouverChselonEt(cin);
     }
