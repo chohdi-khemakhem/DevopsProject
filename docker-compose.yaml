@@ -4,13 +4,33 @@ services:
   app:
     image: ahmednaifer/tp-foyer:1.0.0
     container_name: tp-foyer-app
+    hostname: app
     ports:
       - "8087:8089"
     environment:
-
       SPRING_MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
       SPRING_MANAGEMENT_ENDPOINTS_WEB_BASE_PATH: /actuator
       SPRING_MANAGEMENT_ENDPOINT_HEALTH_SHOWDETAILS: always
+      # Database configuration
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3307/db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD:
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - db
+    networks:
+      - monitoring
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: db
+    ports:
+      - "3306:3306"
+    networks:
+      - monitoring
 
   prometheus:
     image: prom/prometheus
@@ -19,15 +39,25 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - '9090:9090'
+    depends_on:
+      - app
+    networks:
+      - monitoring
 
   grafana:
-      image: grafana/grafana
-      container_name: grafana
-      ports:
-        - '3000:3000'
-      volumes:
-        - grafana-data:/var/lib/grafana
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - monitoring
 
 volumes:
   grafana-data:
     driver: local
+
+networks:
+  monitoring:
+    driver: bridge
