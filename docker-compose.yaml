@@ -4,28 +4,21 @@ services:
   app:
     image: ahmednaifer/tp-foyer:1.0.0
     container_name: tp-foyer-app
-    hostname: app
     ports:
       - "8087:8089"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/db
       SPRING_DATASOURCE_USERNAME: ahmed
       SPRING_DATASOURCE_PASSWORD: ahmed
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: false
-      SERVER_PORT: 8089
-      SERVER_SERVLET_CONTEXT_PATH: /tpfoyer
-      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: '*'
-      MANAGEMENT_ENDPOINTS_WEB_BASE_PATH: /actuator
-      MANAGEMENT_ENDPOINT_HEALTH_SHOWDETAILS: always
+      SPRING_MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
+      SPRING_MANAGEMENT_ENDPOINTS_WEB_BASE_PATH: /actuator
+      SPRING_MANAGEMENT_ENDPOINT_HEALTH_SHOWDETAILS: always
     depends_on:
-      - db
+      - postgres
     networks:
-      - monitoring
+      - spring-demo
 
-
-  db:
+  postgres:
     container_name: postgres-db
     image: postgres
     environment:
@@ -38,7 +31,7 @@ services:
     ports:
       - '5432:5432'
     networks:
-      - monitoring
+      - spring-demo
     restart: unless-stopped
 
   prometheus:
@@ -48,10 +41,8 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - '9090:9090'
-    depends_on:
-      - app
     networks:
-      - monitoring
+      - spring-demo
 
   grafana:
     image: grafana/grafana
@@ -61,14 +52,14 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
     networks:
-      - monitoring
+      - spring-demo
+
+networks:
+  spring-demo:
+    driver: bridge
 
 volumes:
   postgres:
     driver: local
   grafana-data:
     driver: local
-
-networks:
-  monitoring:
-    driver: bridge
