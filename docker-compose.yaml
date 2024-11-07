@@ -34,7 +34,7 @@ services:
     ports:
       - '5432:5432'
     networks:
-      - spring-demo
+      - monitoring
     restart: unless-stopped
 
   prometheus:
@@ -60,6 +60,8 @@ services:
       - monitoring
 
 volumes:
+  postgres:
+    driver: local
   grafana-data:
     driver: local
 
