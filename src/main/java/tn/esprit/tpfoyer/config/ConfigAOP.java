@@ -1,6 +1,5 @@
 package tn.esprit.tpfoyer.config;
 
-
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -17,28 +16,31 @@ public class ConfigAOP {
 
     @Before("execution(* tn.esprit.tpfoyer.service.*.*(..))")
     public void logMethodEntry(JoinPoint joinPoint) {
-        String name = joinPoint.getSignature().getName();
-        log.info("In Metod AOP : " + name);
+        String methodName = joinPoint.getSignature().getName();
+        log.info("Entering method: {}", methodName);
     }
 
     @After("execution(* tn.esprit.tpfoyer.service.*.add*(..))")
     public void logMethodOut(JoinPoint joinPoint) {
-        String name = joinPoint.getSignature().getName();
-        log.info("Execution Réussie ! ");
+        String methodName = joinPoint.getSignature().getName();
+        log.info("Execution successful for method: {}", methodName);
     }
 
     @Around("execution(* tn.esprit.tpfoyer.service.*.*(..))")
-    public Object profile(ProceedingJoinPoint pjp) throws Throwable
-    {
-        long start= System.currentTimeMillis();
+    public Object profile(ProceedingJoinPoint pjp) throws Throwable {
+        long start = System.currentTimeMillis();
+        Object result;
 
-        Object obj= pjp.proceed();
+        try {
+            result = pjp.proceed();
+        } catch (Throwable throwable) {
+            log.error("Exception in method: {} with message: {}", pjp.getSignature().getName(), throwable.getMessage());
+            throw throwable; // Re-throw the exception to ensure the normal flow of exception handling
+        }
 
-        long elapsedTime= System.currentTimeMillis() -start;
+        long elapsedTime = System.currentTimeMillis() - start;
+        log.info("Execution time of method {}: {} milliseconds", pjp.getSignature().getName(), elapsedTime);
 
-        log.info("Methodexecutiontime: " + elapsedTime+ " milliseconds.");
-        return obj;
+        return result;
     }
-
-
 }
