@@ -8,18 +8,22 @@ services:
     ports:
       - "8087:8089"
     environment:
-      SPRING_MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
-      SPRING_MANAGEMENT_ENDPOINTS_WEB_BASE_PATH: /actuator
-      SPRING_MANAGEMENT_ENDPOINT_HEALTH_SHOWDETAILS: always
-      # Database configuration
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/db
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD:
+      SPRING_DATASOURCE_USERNAME: ahmed
+      SPRING_DATASOURCE_PASSWORD: ahmed
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: false
+      SERVER_PORT: 8089
+      SERVER_SERVLET_CONTEXT_PATH: /tpfoyer
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: '*'
+      MANAGEMENT_ENDPOINTS_WEB_BASE_PATH: /actuator
+      MANAGEMENT_ENDPOINT_HEALTH_SHOWDETAILS: always
     depends_on:
       - db
     networks:
       - monitoring
+
 
   db:
     container_name: postgres-db
