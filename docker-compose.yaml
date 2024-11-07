@@ -22,15 +22,20 @@ services:
       - monitoring
 
   db:
-    image: mysql:8.0
-    container_name: mysql-db
+    container_name: postgres-db
+    image: postgres
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-      MYSQL_DATABASE: db
+      POSTGRES_USER: ahmed
+      POSTGRES_PASSWORD: ahmed
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: db
+    volumes:
+      - postgres:/data/postgres
     ports:
-      - "3306:3306"
+      - '5432:5432'
     networks:
-      - monitoring
+      - spring-demo
+    restart: unless-stopped
 
   prometheus:
     image: prom/prometheus
