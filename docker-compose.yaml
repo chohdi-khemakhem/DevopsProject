@@ -28,6 +28,13 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
     depends_on:
       - mysqldb
-
+  tp-foyer-front:
+    image: slimfarhat122/tp-foyer-front:latest
+    container_name: tp-foyer-front
+    restart: on-failure
+    ports:
+      - "80:3000" # Change the port to the one your frontend app runs on
+    depends_on:
+      - app
 volumes:
   db_data:
