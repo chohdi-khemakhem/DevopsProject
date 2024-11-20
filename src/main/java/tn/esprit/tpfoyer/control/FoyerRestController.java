@@ -34,7 +34,6 @@ public class FoyerRestController {
         return foyer;
     }
 
-    // http://localhost:8089/tpfoyer/foyer/remove-foyer/{foyer-id}
     @DeleteMapping("/remove-foyer/{foyer-id}")
     public void removeFoyer(@PathVariable("foyer-id") Long fId) {
         foyerService.removeFoyer(fId);
