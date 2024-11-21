@@ -1,28 +1,22 @@
 package tn.esprit.tpfoyer.Service;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import tn.esprit.tpfoyer.entity.Chambre;
 import tn.esprit.tpfoyer.entity.TypeChambre;
 import tn.esprit.tpfoyer.repository.ChambreRepository;
 import tn.esprit.tpfoyer.service.ChambreServiceImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
- class ChambreServiceImplTest {
+class ChambreServiceImplTest {
 
     @Mock
     private ChambreRepository chambreRepository;
@@ -30,87 +24,111 @@ import static org.mockito.Mockito.*;
     @InjectMocks
     private ChambreServiceImpl chambreService;
 
-    private Chambre chambre;
-
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
-        chambre = new Chambre();
-        chambre.setIdChambre(1L);
-        chambre.setNumeroChambre(101);
-        chambre.setTypeC(TypeChambre.SIMPLE);
     }
 
     @Test
-     void testRetrieveAllChambres() {
-        List<Chambre> chambres = new ArrayList<>();
-        chambres.add(chambre);
+    void testRetrieveAllChambres() {
+        // Given
+        List<Chambre> mockChambres = List.of(new Chambre(), new Chambre());
+        when(chambreRepository.findAll()).thenReturn(mockChambres);
 
-        when(chambreRepository.findAll()).thenReturn(chambres);
-
+        // When
         List<Chambre> result = chambreService.retrieveAllChambres();
-        assertEquals(1, result.size());
+
+        // Then
+        assertEquals(2, result.size());
         verify(chambreRepository, times(1)).findAll();
     }
 
     @Test
-     void testRetrieveChambre() {
-        when(chambreRepository.findById(1L)).thenReturn(Optional.of(chambre));
+    void testRetrieveChambre() {
+        // Given
+        Long chambreId = 123L;
+        Chambre mockChambre = new Chambre();
+        mockChambre.setIdChambre(chambreId);
+        when(chambreRepository.findById(chambreId)).thenReturn(Optional.of(mockChambre));
 
-        Chambre result = chambreService.retrieveChambre(1L);
+        // When
+        Chambre result = chambreService.retrieveChambre(chambreId);
+
+        // Then
         assertNotNull(result);
-        assertEquals(1L, result.getIdChambre());
-        verify(chambreRepository, times(1)).findById(1L);
+        assertEquals(chambreId, result.getIdChambre());
+        verify(chambreRepository, times(1)).findById(chambreId);
     }
 
     @Test
-     void testAddChambre() {
-        when(chambreRepository.save(any(Chambre.class))).thenReturn(chambre);
+    void testAddChambre() {
+        // Given
+        Chambre mockChambre = new Chambre();
+        when(chambreRepository.save(mockChambre)).thenReturn(mockChambre);
 
-        Chambre result = chambreService.addChambre(chambre);
+        // When
+        Chambre result = chambreService.addChambre(mockChambre);
+
+        // Then
         assertNotNull(result);
-        assertEquals(1L, result.getIdChambre());
-        verify(chambreRepository, times(1)).save(chambre);
+        verify(chambreRepository, times(1)).save(mockChambre);
     }
 
     @Test
     void testModifyChambre() {
-        when(chambreRepository.save(any(Chambre.class))).thenReturn(chambre);
+        // Given
+        Chambre mockChambre = new Chambre();
+        mockChambre.setIdChambre(123L);
+        when(chambreRepository.save(mockChambre)).thenReturn(mockChambre);
 
-        Chambre result = chambreService.modifyChambre(chambre);
+        // When
+        Chambre result = chambreService.modifyChambre(mockChambre);
+
+        // Then
         assertNotNull(result);
-        assertEquals(1L, result.getIdChambre());
-        verify(chambreRepository, times(1)).save(chambre);
+        assertEquals(123L, result.getIdChambre());
+        verify(chambreRepository, times(1)).save(mockChambre);
     }
 
     @Test
-     void testRemoveChambre() {
-        doNothing().when(chambreRepository).deleteById(1L);
+    void testRemoveChambre() {
+        // Given
+        Long chambreId = 123L;
 
-        chambreService.removeChambre(1L);
-        verify(chambreRepository, times(1)).deleteById(1L);
+        // When
+        chambreService.removeChambre(chambreId);
+
+        // Then
+        verify(chambreRepository, times(1)).deleteById(chambreId);
     }
 
     @Test
-     void testRecupererChambresSelonType() {
-        List<Chambre> chambres = new ArrayList<>();
-        chambres.add(chambre);
+    void testRecupererChambresSelonTyp() {
+        // Given
+        TypeChambre typeChambre = TypeChambre.SIMPLE; // Adjust according to your enum values
+        List<Chambre> mockChambres = List.of(new Chambre(), new Chambre());
+        when(chambreRepository.findAllByTypeC(typeChambre)).thenReturn(mockChambres);
 
-        when(chambreRepository.findAllByTypeC(TypeChambre.SIMPLE)).thenReturn(chambres);
+        // When
+        List<Chambre> result = chambreService.recupererChambresSelonTyp(typeChambre);
 
-        List<Chambre> result = chambreService.recupererChambresSelonTyp(TypeChambre.SIMPLE);
-        assertEquals(1, result.size());
-        verify(chambreRepository, times(1)).findAllByTypeC(TypeChambre.SIMPLE);
+        // Then
+        assertEquals(2, result.size());
+        verify(chambreRepository, times(1)).findAllByTypeC(typeChambre);
     }
 
     @Test
-     void testTrouverChambreSelonEtudiant() {
-        when(chambreRepository.trouverChselonEt(12345L)).thenReturn(chambre);
+    void testTrouverChambreSelonEtudiant() {
+        // Given
+        long cin = 12345678L;
+        Chambre mockChambre = new Chambre();
+        when(chambreRepository.trouverChselonEt(cin)).thenReturn(mockChambre);
 
-        Chambre result = chambreService.trouverchambreSelonEtudiant(12345L);
+        // When
+        Chambre result = chambreService.trouverchambreSelonEtudiant(cin);
+
+        // Then
         assertNotNull(result);
-        assertEquals(1L, result.getIdChambre());
-        verify(chambreRepository, times(1)).trouverChselonEt(12345L);
+        verify(chambreRepository, times(1)).trouverChselonEt(cin);
     }
 }
-
