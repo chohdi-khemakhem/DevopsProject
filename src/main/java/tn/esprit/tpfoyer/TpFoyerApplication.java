@@ -1,16 +1,14 @@
 package tn.esprit.tpfoyer;
 
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import tn.esprit.tpfoyer.entity.Universite;
 import tn.esprit.tpfoyer.repository.UniversiteRepository;
-
 
 @SpringBootApplication
 @EnableScheduling
@@ -20,21 +18,16 @@ public class TpFoyerApplication {
     public static void main(String[] args) {
         SpringApplication.run(TpFoyerApplication.class, args);
     }
+
     @Bean
+    @Profile("!test")  // Add this annotation
     CommandLineRunner runner(UniversiteRepository universiteRepository) {
         return args -> {
-
             Universite esprit = new Universite();
             esprit.setNomUniversite("esprit");
             esprit.setAdresse("ariana");
 
-
-
             universiteRepository.save(esprit);
-
-
-
-
         };
     }
 }
